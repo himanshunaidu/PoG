@@ -308,7 +308,7 @@ def add_pre_info(add_ent_list, depth_ent_rel_ent_dict, new_ent_rel_ent_dict, ent
             add_head.append(-1)
             add_relations.append('')
             if cur_ent not in new_ent_rel_ent_dict.keys():
-                new_ent_rel_ent_dict[topic_e] = {}
+                new_ent_rel_ent_dict[cur_ent] = {}
 
     return add_entities_id, add_relations, add_head, new_ent_rel_ent_dict
 
