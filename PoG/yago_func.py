@@ -197,10 +197,10 @@ def entity_search(entity, relation, head=True):
 def provide_triple(entity_candidates_id, relation):
     entity_candidates = []
     for entity_id in entity_candidates_id:
-        if entity_id.startswith("m."):
-            entity_candidates.append(id2entity_name_or_type(entity_id))
-        else:
-            entity_candidates.append(entity_id)
+        # if entity_id.startswith("m."):
+        entity_candidates.append(id2entity_name_or_type(entity_id))
+        # else:
+        #     entity_candidates.append(entity_id)
 
     if len(entity_candidates) <= 1:
         return entity_candidates, entity_candidates_id
@@ -274,7 +274,7 @@ def entity_condition_prune(question, total_entities_id, total_relations, total_c
                     sorted_e_list = [entid_name[e_id] for e_id in sorted(e_list)]
                     select_ent = sorted_e_list
                 else:
-                    if all(entid_name[item].startswith('m.') for item in e_list) and len(e_list) > 10:
+                    if len(e_list) > 10: #all(entid_name[item].startswith('m.') for item in e_list) and
                         e_list = random.sample(e_list, 10)
 
                     if len(e_list) > 70:

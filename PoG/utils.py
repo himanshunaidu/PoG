@@ -169,7 +169,7 @@ def if_finish_list(question, lst, depth_ent_rel_ent_dict, entid_name, name_entid
             all_ent_set.add(topic_e)
             for h_t, r_e_dict in h_t_dict.items():
                 for rela, e_list in r_e_dict.items():
-                    if all(entid_name[item].startswith('m.') for item in e_list) and len(e_list)>10:
+                    if len(e_list)>10: #all(entid_name[item].startswith('m.') for item in e_list) and
                         e_list = random.sample(e_list, 10)
                         
                     if len(e_list) > 70:

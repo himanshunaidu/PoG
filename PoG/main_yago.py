@@ -52,7 +52,8 @@ if __name__ == '__main__':
     # if findone:
     #     datas = get_one_data(datas, question_string, 'Which countries both contain the Delnita River and fall in Eastern Europe?')
     #     print(datas)
-    model = SentenceTransformer('../../../models/sentence-transformers/msmarco-distilbert-base-tas-b')
+    # model = SentenceTransformer('../../../models/sentence-transformers/msmarco-distilbert-base-tas-b')
+    model = SentenceTransformer('sentence-transformers/msmarco-distilbert-base-tas-b')
     part_q = False
     if part_q:
         q_set = []
@@ -83,7 +84,7 @@ if __name__ == '__main__':
             for kk in token_num.keys():
                 all_t[kk] += token_num[kk]
 
-            topic_entity = data['topic_entity']
+            topic_entity = data['qid_topic_entity']
             cluster_chain_of_entities = []
             depth_ent_rel_ent_dict = {}
             reverse_rec = {'time': 0, 'ent': []}
@@ -190,7 +191,7 @@ if __name__ == '__main__':
                         all_t[kk] += token_num[kk]
 
 
-                    if str(answer).lower() == 'null' or str(answer).lower() == 'none'  or str(answer).startswith('m.') or str(answer).startswith('[\"m.') or str(answer).startswith("['m.") or 'yes' not in str(sufficient).lower():
+                    if str(answer).lower() == 'null' or str(answer).lower() == 'none' or 'yes' not in str(sufficient).lower():  #or str(answer).startswith('m.') or str(answer).startswith('[\"m.') or str(answer).startswith("['m.") 
                         stop = False
                     else:
                         stop = True
@@ -235,8 +236,8 @@ if __name__ == '__main__':
                             for entity in entities_id:
                                 if if_topic_non_retrieve(entity):
                                     continue
-                                if entity.startswith("m."):
-                                    topic_entity[entity] = entid_name[entity]
+                                # if entity.startswith("m."):
+                                topic_entity[entity] = entid_name[entity]
 
                 else:
                     new_e_rev_list = [entid_name[x] for x in reverse_rec['ent']]
