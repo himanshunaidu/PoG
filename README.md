@@ -25,6 +25,19 @@ python main_freebase.py \
 --LLM_type gpt-3.5-turbo \ # the LLM
 --opeani_api_keys sk-xxxx \ # your own api keys
 ```
+
+```sh
+python main_yago.py \
+--dataset cwq \ # the dataset
+--max_length 4096 \ # the max length of LLMs output
+--temperature_exploration 0.3 \ # the temperature in exploration stage
+--temperature_reasoning 0.3 \ # the temperature in reasoning stage
+--depth 4 \ # the search depth
+--remove_unnecessary_rel True \ # whether removing unnecessary relations
+--LLM_type gpt-3.5-turbo \ # the LLM
+--opeani_api_keys sk-xxxx \ # your own api keys
+```
+
 All prompts used in experiments are in the `prompt_list.py` file.
 
 ### Evaluation
