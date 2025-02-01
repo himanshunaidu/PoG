@@ -42,13 +42,17 @@ sparql_head_relations = """\n%s\n SELECT DISTINCT ?relation\nWHERE {\n %s ?relat
 sparql_tail_relations = """\n%s\nSELECT DISTINCT ?relation\nWHERE {\n  ?x ?relation %s .\n}"""
 sparql_tail_entities_extract = """%s\nSELECT ?tailEntity\nWHERE {\n%s %s ?tailEntity .\n}""" 
 sparql_head_entities_extract = """%s\nSELECT ?tailEntity\nWHERE {\n?tailEntity %s %s  .\n}"""
+# Gets the possible labels and IDs (e.g. Wikidata) of the entity. Priority is given to the label.
+# We ignore relations such as schema:sameAs
+# EDIT: Ignored owl:sameAs as well.
 sparql_id = """
 %s\n
 SELECT DISTINCT ?tailEntity\n
 WHERE {\n
-    ?entity owl:sameAs ?tailEntity .\n
-    FILTER(?entity = %s)\n
-}""" # We ignore relations such as schema:sameAs
+    %s rdfs:label ?tailEntity .\n
+    FILTER (lang(?tailEntity) = 'en')\n
+}
+"""
 
 # def check_end_word(s):
 #     words = [" ID", " code", " number", "instance of", "website", "URL", "inception", "image", " rate", " count"]
@@ -261,6 +265,10 @@ def is_all_digits(lst):
 
 
 def entity_condition_prune(question, total_entities_id, total_relations, total_candidates, total_topic_entities, total_head, ent_rel_ent_dict, entid_name, name_entid, args, model):
+    """
+    the function refines the initial set of candidates, using both heuristic checks and an LLM-based decision, 
+    to focus on the entity that most likely answers the question correctly.
+    """
     cur_call_time = 0
     cur_token = {'total': 0, 'input': 0, 'output': 0}
 
@@ -424,5 +432,10 @@ def reasoning(question, subquestions, ent_rel_ent_dict, entid_name, cluster_chai
 
     
 
+if __name__ == "__main__":
+    entity = 'yago:Belgium'
+    print(entity)
+    print(id2entity_name_or_type(entity))
 
-
+    print(INVALID_PROPERTIES)
+    print([relation for relation in ["rdf:type", "rdfs:label", "schema:sameAs"] if not abandon_rels(relation)])
