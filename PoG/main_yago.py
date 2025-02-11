@@ -10,6 +10,10 @@ def repeat_unanswer(dataset, datas, question_string, model_name):
     new_data = []
 
     file_path = 'PoG_'+dataset+'_'+model_name+'.jsonl'
+    if not os.path.exists(file_path):
+        # Create file
+        with open(file_path, 'w', encoding='utf-8') as file:
+            pass
     with open(file_path, 'r', encoding='utf-8') as file:
         for line in file:
             data = json.loads(line) 
@@ -18,7 +22,7 @@ def repeat_unanswer(dataset, datas, question_string, model_name):
     for x in datas:
         if x[question_string] not in answered_set:
             new_data.append(x)
-    print(len(new_data))
+    # print(len(new_data))
 
     return new_data
 
@@ -45,6 +49,10 @@ if __name__ == '__main__':
                         default="gpt-3.5-turbo", help="base LLM model.")
     parser.add_argument("--opeani_api_keys", type=str,
                         default="", help="if the LLM_type is gpt-3.5-turbo or gpt-4, you need add your own openai api keys.")
+    parser.add_argument("--start", type=int,
+                        default=0, help="start index.")
+    parser.add_argument("--end", type=int,
+                        default=-1, help="end index.")
 
     args = parser.parse_args()
     datas, question_string = prepare_dataset(args.dataset)
@@ -62,8 +70,13 @@ if __name__ == '__main__':
             q_set.append(line.strip())
 
     print("Start Running PoG on %s dataset." % args.dataset)
+    start, end = args.start, args.end
 
-    for data in tqdm(datas):
+    for index, data in tqdm(enumerate(datas), total=len(datas)):
+        if index < start:
+            continue
+        if end != -1 and index >= end:
+            break
         if part_q and data[question_string] not in q_set:
             continue
         try:
@@ -256,4 +269,7 @@ if __name__ == '__main__':
                 reverse_rec['ent'] = new_e_rev_list
                 save_2_jsonl(question, question_string, results, [], call_num, all_t, start_time, file_name=args.dataset+'_'+args.LLM_type)
         except:
+            results, token_num = generate_without_explored_paths(question, sub_questions, args)
+            results = "Error, falling back to LLM: " + results
+            save_2_jsonl(question, question_string, results, [], call_num, all_t, start_time, file_name=args.dataset+'_'+args.LLM_type)
             continue
