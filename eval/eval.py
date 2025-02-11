@@ -1,6 +1,7 @@
 import argparse
 import numpy as np
 from utils import *
+import re
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
@@ -25,8 +26,8 @@ if __name__ == '__main__':
     type_field = ''
     part_q = False
     aname_dict = {}
-    alias_dict = {}
-    add_ans_alias_dict = {}
+    alias_dict = {} # Not actually used
+    add_ans_alias_dict = {} # Not actually used
     call_num_list = []
     time_list = []
     token_num_list = {
@@ -37,11 +38,11 @@ if __name__ == '__main__':
 
     if args.dataset == 'cwq':
         type_field = 'compositionality_type'
-        with open('../../pog/cope_alias/cwq_aname_dict.json', 'r', encoding='utf-8') as f:
+        with open('../cope_alias/cwq_aname_dict.json', 'r', encoding='utf-8') as f:
             aname_dict = json.load(f)
-        with open('../../pog/cope_alias/CWQ_aliase_data31158.json', 'r', encoding='utf-8') as f:
+        with open('../cope_alias/CWQ_aliase_data31158.json', 'r', encoding='utf-8') as f:
             alias_dict = json.load(f)
-        with open('../../pog/cope_alias/ComplexWebQuestions_test_wans.json', 'r', encoding='utf-8') as f:
+        with open('../cope_alias/ComplexWebQuestions_test_wans.json', 'r', encoding='utf-8') as f:
             q_all_list = json.load(f)
             for q_item in q_all_list:
                 ans_list = []
@@ -56,14 +57,14 @@ if __name__ == '__main__':
                 add_ans_alias_dict[q_item['question']] = ans_list
 
     elif args.dataset == 'webqsp':
-        with open('../../pog/cope_alias/WQSP_aliase_data.json', 'r', encoding='utf-8') as f:
+        with open('../cope_alias/WQSP_aliase_data.json', 'r', encoding='utf-8') as f:
             alias_dict = json.load(f)
     elif args.dataset == 'grailqa':
         type_field = 'level'
             
     if part_q:
         q_set = []
-        with open('../../pog/eval/analysis_question', 'r', encoding='utf-8') as f:
+        with open('../eval/analysis_question', 'r', encoding='utf-8') as f:
             for line in f.readlines():
                 q_set.append(line.strip())
 
@@ -71,7 +72,7 @@ if __name__ == '__main__':
         if part_q and data[question_string] not in q_set:
             continue
 
-        print(data[question_string])
+        # print(data[question_string])
         answers, ori_data = align(args.dataset, question_string, data, ground_truth_datas, aname_dict, alias_dict, add_ans_alias_dict)
 
         if 'time' in data.keys():
@@ -178,3 +179,6 @@ if __name__ == '__main__':
         print(t_type, np.mean(np.array(nu_l)))
 
 
+
+# Command
+# python eval.py --dataset cwq --output_file PoG_cwq_gpt-4o_backup

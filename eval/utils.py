@@ -24,6 +24,34 @@ def prepare_dataset_for_eval(dataset_name, output_file):
         with open('../data/grailqa.json',encoding='utf-8') as f:
             datas = json.load(f)
         question_string = 'question'
+    elif dataset_name == 'simpleqa':
+        with open('../data/SimpleQA.json',encoding='utf-8') as f:
+            datas = json.load(f)    
+        question_string = 'question'
+    elif dataset_name == 'qald':
+        with open('../data/qald_10-en.json',encoding='utf-8') as f:
+            datas = json.load(f) 
+        question_string = 'question'   
+    elif dataset_name == 'webquestions':
+        with open('../data/WebQuestions.json',encoding='utf-8') as f:
+            datas = json.load(f)
+        question_string = 'question'
+    elif dataset_name == 'trex':
+        with open('../data/T-REX.json',encoding='utf-8') as f:
+            datas = json.load(f)
+        question_string = 'input'    
+    elif dataset_name == 'zeroshotre':
+        with open('../data/Zero_Shot_RE.json',encoding='utf-8') as f:
+            datas = json.load(f)
+        question_string = 'input'    
+    elif dataset_name == 'creak':
+        with open('../data/creak.json',encoding='utf-8') as f:
+            datas = json.load(f)
+        question_string = 'sentence'
+    elif dataset_name == 'dynamickgqa': # MARK: Added case for 'dynamickgqa'
+        with open('../data/dynamickgqa_test_output.json',encoding='utf-8') as f:
+            datas = json.load(f)
+        question_string = 'question'
     else:
         print("dataset not found, you should pick from {cwq, webqsp, grailqa}.")
         exit(-1)
@@ -36,23 +64,16 @@ def align(dataset_name, question_string, data, ground_truth_datas, aname_dict, a
     answer_list= []
     origin_data = [j for j in ground_truth_datas if j[question_string] == data[question_string]][0]
     if dataset_name == 'cwq':
-        add_data = aname_dict[data[question_string]]
-        add_ans_alias_data = add_ans_alias_dict[data[question_string]]
-        add_data += add_ans_alias_data
         if 'answers' in origin_data:
             answers = origin_data["answers"]
         else:
             answers = origin_data["answer"]
-        if answers not in add_data:
-            add_data.append(answers)
-        
-        answer_list = add_data
-        alias_list = []
-        for x in answer_list:
-            if x in alias_dict.keys():
-                alias_list += alias_dict[x]
-        
-        answer_list = list(set(answer_list)|set(alias_list))
+        # for answer in answers:
+        #     alias = answer['aliases']
+        #     ans = answer['answer']
+        #     alias.append(ans)
+        #     answer_list.extend(alias)
+        answer_list.append(answers)
 
     elif dataset_name == 'webqsp':
         answers = origin_data["Parses"]
@@ -63,13 +84,6 @@ def align(dataset_name, question_string, data, ground_truth_datas, aname_dict, a
                 else:
                     answer_list.append(name['EntityName'])
 
-        alias_list = []
-        for x in answer_list:
-            if x in alias_dict.keys():
-                alias_list += alias_dict[x]
-        
-        answer_list = list(set(answer_list)|set(alias_list))
-
     elif dataset_name == 'grailqa':
         answers = origin_data["answer"]
         for answer in answers:
@@ -77,6 +91,31 @@ def align(dataset_name, question_string, data, ground_truth_datas, aname_dict, a
                 answer_list.append(answer['entity_name'])
             else:
                 answer_list.append(answer['answer_argument'])
+
+    elif dataset_name == 'simpleqa':
+        answers = origin_data["answer"]
+        answer_list.append(answers)
+
+    elif dataset_name == 'qald':
+        answers = origin_data["answer"]
+        for answer in answers:
+            answer_list.append(answers[answer])
+        
+    elif dataset_name == 'webquestions':
+        answer_list = origin_data["answers"]
+
+    elif dataset_name == 'trex' or dataset_name == 'zeroshotre':
+        answers = origin_data["answer"]
+        answer_list.append(answers)
+
+    elif dataset_name == 'creak':
+        answer = origin_data['label']
+        answer_list.append(answer)
+
+    elif dataset_name == 'dynamickgqa':
+        answer = origin_data["answer_readable"]
+        # for answer in answers:
+        answer_list.append(answer)
 
     return list(set(answer_list)), origin_data
     
