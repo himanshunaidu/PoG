@@ -68,14 +68,32 @@ def convert_dict_name(ent_rel_ent_dict, entid_name):
                         name_dict[entid_name[topic_e]][h_t][rela].append(entid_name[ent])
     return name_dict
 
-    
+outfile = None
+def save_2_jsonl(question, answer, cluster_chain_of_entities, file_name):
+    global outfile
+    if outfile is None:
+        outfile = open("ToG_{}.jsonl".format(file_name), "w")
+    dict = {"question":question, "results": answer, "reasoning_chains": cluster_chain_of_entities}
+    # with open("ToG_{}.jsonl".format(file_name), "a") as outfile:
+    json_str = json.dumps(dict)
+    outfile.write(json_str + "\n")
 
 def save_2_jsonl(question, question_string, answer, cluster_chain_of_entities, call_num, all_t, start_time, file_name):
+    global outfile
+    if outfile is None:
+        outfile = open("PoG_{}.jsonl".format(file_name), "w")
     tt = time.time()-start_time
     dict = {question_string:question, "results": answer, "reasoning_chains": cluster_chain_of_entities, "call_num": call_num, "total_token": all_t['total'], "input_token": all_t['input'], "output_token": all_t['output'], "time": tt}
     with open("PoG_{}.jsonl".format(file_name), "a") as outfile:
         json_str = json.dumps(dict)
         outfile.write(json_str + "\n")
+
+def get_jsonl(file_name):
+    if not os.path.exists("PoG_{}.jsonl".format(file_name)):
+        return []
+    with open("PoG_{}.jsonl".format(file_name), "r") as f:
+        data = [json.loads(line) for line in f]
+    return data
 
 def extract_add_ent(string):
     first_brace_p = string.find('[')

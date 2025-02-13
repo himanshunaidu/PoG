@@ -241,6 +241,15 @@ def half_stop(question, question_string, subquestions, cluster_chain_of_entities
 
     save_2_jsonl(question, question_string, answer, cluster_chain_of_entities, call_num, all_t, start_time, file_name=args.dataset+'_'+args.LLM_type)
 
+def half_stop_no_write(question, question_string, subquestions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args):
+    print("No new knowledge added during search depth %d, stop searching." % depth)
+    call_num += 1
+    answer, token_num = generate_answer(question, subquestions, cluster_chain_of_entities, args)
+
+    for kk in token_num.keys():
+        all_t[kk] += token_num[kk]
+    return answer, call_num, all_t
+
 
 def generate_answer(question, subquestions, cluster_chain_of_entities, args): 
     prompt = answer_prompt + question 

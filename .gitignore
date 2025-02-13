@@ -9,3 +9,5 @@ server_log**
 
 mem/
 PoG/*.jsonl
+
+.env

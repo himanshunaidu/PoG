@@ -1,4 +1,4 @@
-
+# No change required
 subobjective_prompt = """Please break down the process of answering the question into as few subobjectives as possible based on semantic analysis.
 Here is an example: 
 Q: Which of the countries in the Caribbean has the smallest country calling code?
@@ -8,7 +8,8 @@ Now you need to directly output subobjectives of the following question in list 
 Q: """
 
 
-
+# In use, and contains Freebase specific relations
+# Needs to be changed
 extract_relation_prompt = """Please provide as few highly relevant relations as possible to the question and its subobjectives from the following relations (separated by semicolons).
 Here is an example:
 Q: Name the president of the country whose main spoken language was Brahui in 1980?
@@ -21,6 +22,8 @@ The output is:
 Now you need to directly output relations highly related to the following question and its subobjectives in list format without other information or notes.
 Q: """
 
+# In use, and contains Freebase specific relations
+# Needs to be changed
 answer_prompt = """Given a question and the associated retrieved knowledge graph triplets (entity, relation, entity), you are asked to answer the question with these triplets and your knowledge.
 
 Here are five examples:
@@ -93,6 +96,8 @@ The output is:
 Now you need to directly output the results of the following question in JSON format (must include "A" and "R") without other information or notes.
 Q: """
 
+# In use, and contains Freebase specific relations
+# Needs to be changed
 prune_entity_prompt = """
 Which entities in the following list ([] in Triples) can be used to answer question? Please provide the minimum possible number of entities, and strictly adhering to the constraints mentioned in the question. 
 Here is an example:
@@ -103,6 +108,8 @@ Output: ['So Undercover']
 Now you need to directly output the entities from [] in Triplets for the following question in list format without other information or notes.
 Q: """
 
+# In use, and contains Freebase specific relations
+# Needs to be changed
 update_mem_prompt = """Based on the provided information (which may have missing parts and require further retrieval) and your own knowledge, output the currently known information required to achieve the subobjectives.
 Here is an example:
 Q: Find the person who said "Taste cannot be controlled by law", what did this person die from?
@@ -117,7 +124,8 @@ Output: {
 Now you need to directly output the results of the following question in JSON format without other information or notes. 
 Q: """
 
-
+# In use, and contains Freebase specific relations
+# Needs to be changed
 answer_depth_prompt = """Please answer the question based on the memory, related knowledge triplets and your knowledge.
 
 Here are five example:
@@ -210,6 +218,8 @@ Output:
 Now you need to directly output the results of the following question in JSON format (must include "A" and "R") without other information or notes. If the triplets explicitly contains the answer to the question, prioritize the fact of the triplet over memory.
 Q: """
 
+# In use, and contains Freebase specific relations
+# Needs to be changed
 judge_reverse = """Based on the current set of entities to be retrieved and the known information including memory and triplets, is it necessary to add additional entities for answering question?
 Here are two examples:
 Q: Which of the countries in the Caribbean has the smallest country calling code?
@@ -235,7 +245,8 @@ Output:
 Now you need to directly output the results of the following question in the JSON format (must include "Add" and "Reason") without other information or notes.
 Q: """
 
-
+# In use, and contains Freebase specific relations
+# Needs to be changed
 add_ent_prompt = """Please select the fewest necessary entities to be retrieved for answering the Q from Candidate Entities, based on the current known information (Memory), the reason for additional retrieval, and your own knowledge.
 Here is an example:
 Q: Which of the countries in the Caribbean has the smallest country calling code?
