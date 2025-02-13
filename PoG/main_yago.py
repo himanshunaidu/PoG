@@ -138,7 +138,7 @@ def process(data, args, question_string, model):
                 new_e_rev_list = [entid_name[x] for x in reverse_rec['ent']]
                 reverse_rec['ent'] = new_e_rev_list
                 # half_stop(question, question_string, sub_questions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args)
-                answer, call_num, all_t = half_stop_no_write(question, question_string, sub_questions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args)
+                results, call_num, all_t = half_stop_no_write(question, question_string, sub_questions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args)
                 flag_printed = True
                 break
             
@@ -201,7 +201,7 @@ def process(data, args, question_string, model):
                         new_e_rev_list = [entid_name[x] for x in reverse_rec['ent']]
                         reverse_rec['ent'] = new_e_rev_list
                         # half_stop(question, question_string, sub_questions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args)
-                        answer, call_num, all_t = half_stop_no_write(question, question_string, sub_questions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args)
+                        results, call_num, all_t = half_stop_no_write(question, question_string, sub_questions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args)
                         flag_printed = True
                         break
                     else:
@@ -216,7 +216,7 @@ def process(data, args, question_string, model):
                 new_e_rev_list = [entid_name[x] for x in reverse_rec['ent']]
                 reverse_rec['ent'] = new_e_rev_list
                 # half_stop(question, question_string, sub_questions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args)
-                answer, call_num, all_t = half_stop_no_write(question, question_string, sub_questions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args)
+                results, call_num, all_t = half_stop_no_write(question, question_string, sub_questions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args)
                 flag_printed = True
                 break
         
@@ -289,6 +289,8 @@ if __name__ == '__main__':
                         default="gpt-3.5-turbo", help="base LLM model.")
     parser.add_argument("--opeani_api_keys", type=str,
                         default="", help="if the LLM_type is gpt-3.5-turbo or gpt-4, you need add your own openai api keys.")
+    parser.add_argument("--n", type=int,
+                        default=1, help="the number of threads.")
     parser.add_argument("--start", type=int,
                         default=0, help="start index.")
     parser.add_argument("--end", type=int,
