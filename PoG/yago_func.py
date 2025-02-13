@@ -230,7 +230,10 @@ def update_history(entity_candidates, ent_rel, entity_candidates_id, total_candi
     total_head.extend(head_num)
     return total_candidates, total_relations, total_entities_id, total_topic_entities, total_head
 
-
+"""
+Wrong naming convention: 
+The answer here is actually supposed to be called results. 
+"""
 def half_stop(question, question_string, subquestions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args):
     print("No new knowledge added during search depth %d, stop searching." % depth)
     call_num += 1
@@ -241,14 +244,18 @@ def half_stop(question, question_string, subquestions, cluster_chain_of_entities
 
     save_2_jsonl(question, question_string, answer, cluster_chain_of_entities, call_num, all_t, start_time, file_name=args.dataset+'_'+args.LLM_type)
 
+"""
+Wrong naming convention: 
+The answer here is actually supposed to be called results. 
+"""
 def half_stop_no_write(question, question_string, subquestions, cluster_chain_of_entities, depth, call_num, all_t, start_time, args):
     print("No new knowledge added during search depth %d, stop searching." % depth)
     call_num += 1
-    answer, token_num = generate_answer(question, subquestions, cluster_chain_of_entities, args)
+    results, token_num = generate_answer(question, subquestions, cluster_chain_of_entities, args)
 
     for kk in token_num.keys():
         all_t[kk] += token_num[kk]
-    return answer, call_num, all_t
+    return results, call_num, all_t
 
 
 def generate_answer(question, subquestions, cluster_chain_of_entities, args): 
