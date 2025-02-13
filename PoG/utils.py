@@ -10,6 +10,8 @@ from sentence_transformers import util
 from sentence_transformers import SentenceTransformer
 import os
 
+from azure_functions import invoke_gpt_endpoint
+
 color_yellow = "\033[93m"
 color_green = "\033[92m"
 color_red= "\033[91m"
@@ -28,6 +30,9 @@ def run_llm(prompt, temperature, max_tokens, opeani_api_keys, engine="gpt-3.5-tu
     if print_in:
         print(color_green+prompt+color_end)
 
+    if "azure" in engine.lower() or "gpt" in engine.lower():
+        # Most likely an Azure model
+        return run_azure_llm(prompt, temperature, max_tokens, opeani_api_keys, engine)
     if 'gpt' in engine:
         messages = [{"role":"system","content":"You are an AI assistant that helps people find information."}]
         message_prompt = {"role":"user","content":prompt}
@@ -49,6 +54,20 @@ def run_llm(prompt, temperature, max_tokens, opeani_api_keys, engine="gpt-3.5-tu
             print(color_yellow + result + color_end)
         return result, token_num
 
+def run_azure_llm(prompt, temperature, max_tokens, opeani_api_keys, engine):
+    """
+    Run the Azure model.
+    """
+    if "gpt" in engine.lower():
+        response = invoke_gpt_endpoint(prompt, temperature, max_tokens, opeani_api_keys, engine)
+        result = response.choices[0].message.content
+        token_num = {"total": response.usage.total_tokens, "input": response.usage.prompt_tokens, "output": response.usage.completion_tokens}
+        return result, token_num
+    else:
+        response = invoke_gpt_endpoint(prompt, temperature, max_tokens, opeani_api_keys, engine)
+        result = response.choices[0].message.content
+        token_num = {"total": response.usage.total_tokens, "input": response.usage.prompt_tokens, "output": response.usage.completion_tokens}
+        return result, token_num
 
 def convert_dict_name(ent_rel_ent_dict, entid_name):
     name_dict = {}
@@ -68,32 +87,12 @@ def convert_dict_name(ent_rel_ent_dict, entid_name):
                         name_dict[entid_name[topic_e]][h_t][rela].append(entid_name[ent])
     return name_dict
 
-outfile = None
-def save_2_jsonl(question, answer, cluster_chain_of_entities, file_name):
-    global outfile
-    if outfile is None:
-        outfile = open("ToG_{}.jsonl".format(file_name), "w")
-    dict = {"question":question, "results": answer, "reasoning_chains": cluster_chain_of_entities}
-    # with open("ToG_{}.jsonl".format(file_name), "a") as outfile:
-    json_str = json.dumps(dict)
-    outfile.write(json_str + "\n")
-
 def save_2_jsonl(question, question_string, answer, cluster_chain_of_entities, call_num, all_t, start_time, file_name):
-    global outfile
-    if outfile is None:
-        outfile = open("PoG_{}.jsonl".format(file_name), "w")
     tt = time.time()-start_time
     dict = {question_string:question, "results": answer, "reasoning_chains": cluster_chain_of_entities, "call_num": call_num, "total_token": all_t['total'], "input_token": all_t['input'], "output_token": all_t['output'], "time": tt}
     with open("PoG_{}.jsonl".format(file_name), "a") as outfile:
         json_str = json.dumps(dict)
         outfile.write(json_str + "\n")
-
-def get_jsonl(file_name):
-    if not os.path.exists("PoG_{}.jsonl".format(file_name)):
-        return []
-    with open("PoG_{}.jsonl".format(file_name), "r") as f:
-        data = [json.loads(line) for line in f]
-    return data
 
 def extract_add_ent(string):
     first_brace_p = string.find('[')
